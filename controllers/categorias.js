@@ -77,7 +77,7 @@ const actualizarCategoria =  async (req = request, res = response)=>{
 //BORRAR CATEGORIA
 const borrarCategoria =  async (req = request, res = response)=>{
     const {id} = req.params 
-    const categoriaBorrada = await Categoria.findByIdAndUpdate(id,{estado:false},{new:true})
+    const categoriaBorrada = await Categoria.findByIdAndDelete(id)
     res.status(200).json({
         msg:"Categoria Inactivada",
         categoriaBorrada

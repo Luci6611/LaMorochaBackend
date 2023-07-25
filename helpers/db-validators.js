@@ -2,7 +2,8 @@ const Categoria = require("../models/categoria");
 const Producto = require("../models/Producto");
 const Role = require("../models/role");
 
-const Usuario = require("../models/usuario")
+const Usuario = require("../models/usuario");
+const Vendidos = require("../models/vendidos");
 
 
 //  validando si ROLE existe en la base de datos
@@ -38,9 +39,9 @@ const idExiste =async(id)=>{
 
 
     // validar categoria por id
-    const categoriaExiste =async(id)=>{
+    const categoriaExiste =async(_id)=>{
     
-        const existeCategoria = await Categoria.findById({id});
+        const existeCategoria = await Categoria.findById({_id});
         if (!existeCategoria ) {
             throw new Error(`El id ${id} no existe en la Base de Datos`);
         };
@@ -53,6 +54,15 @@ const idExiste =async(id)=>{
                     throw new Error(`El producto con el id ${id} no existe en la Base de Datos`);
                 }
         }
+
+            //verificar si producto mas vendido existe
+            const vendidoExiste =  async (id)=>{
+                const existeVendido = await Vendidos.findById(id);
+                    if(!existeVendido){
+                        throw new Error(`El producto MAS VENDIDO con el id ${id} no existe en la Base de Datos`);
+                    }
+            }
+        
     
 
     module.exports = {
@@ -60,5 +70,6 @@ const idExiste =async(id)=>{
         emailExiste,
         idExiste,
         categoriaExiste ,
-        productoExiste
+        productoExiste,
+        vendidoExiste
     }
