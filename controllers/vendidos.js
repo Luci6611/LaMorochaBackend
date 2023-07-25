@@ -1,14 +1,14 @@
 const { request, response } = require("express");
-const Producto = require("../models/Producto");
+const Vendidos = require("../models/vendidos");
 
 //traer todos los productos paginados
-const obtenerProductos = async (req=request,res=response)=>{
+const obtenerVendidos = async (req=request,res=response)=>{
     const {limite = 6, desde = 0} =req.query;
     const query ={estado:true}
 
-    const [total , productos] = await Promise.all([
-        Producto.countDocuments(query),
-        Producto.find(query)
+    const [total ,vendidos] = await Promise.all([
+        Vendidos.countDocuments(query),
+        Vendidos.find(query)
         .skip(Number(desde))
         .limit(Number(limite))
         .populate("categoria","nombre")
@@ -17,21 +17,21 @@ const obtenerProductos = async (req=request,res=response)=>{
     ])
     res.json({
         total,
-        productos
+        vendidos
 })
 
 }
-//traer producto por id
+//traer Vendidos por id
 
-const  obtenerProducto = async (req=request,res=response)=>{
+const  obtenerVendido = async (req=request,res=response)=>{
         const {id} = req.params;
 
-        const producto = await Producto.findById(id)
+        const vendido = await Vendidos.findById(id)
         .populate("categoria","nombre")
         .populate("usuario","nombre")
 
         res.json({
-            producto
+            vendido
         })
         
 }
@@ -39,16 +39,16 @@ const  obtenerProducto = async (req=request,res=response)=>{
 
 //crear producto
 
-const productoPost= async (req=request,res=response)=>{
+const vendidosPost= async (req=request,res=response)=>{
     const {precio,categoria,descripcion,disponible,img} = req.body;
     const nombre = req.body.nombre.toUpperCase();
 
-    const productoDB = await Producto.findOne({nombre});
+    const vendidosDB = await Vendidos.findOne({nombre});
 
 
-    if(productoDB){
+    if(vendidosDB){
         return res.status(400).json({
-            msg:`El producto ${productoDB.nombre} ya existe`
+            msg:`El producto de mas vendidos : ${vendidosDB.nombre} ya existe`
         })
     }
     //generar la data
@@ -61,20 +61,20 @@ const productoPost= async (req=request,res=response)=>{
         img,
         usuario:req.usuario._id
     };
-    const producto = new Producto(data)
+    const vendido = new Vendidos(data)
 
     //guardar en base de datos
-    await producto.save()
+    await vendido.save()
 
     res.status(201).json({
-        msg:"producto agregado",
-        producto
+        msg:"producto de mas vendidos agregado",
+        vendido
     })
 
 }
 
 //actualizar producto
-const actualizarProducto= async (req=request,res=response)=>{
+const actualizarVendido= async (req=request,res=response)=>{
     const {id} = req.params;
     const {precio,categoria,descripcion,disponible,img} = req.body;
     const usuario = req.usuario._id;
@@ -92,11 +92,11 @@ const actualizarProducto= async (req=request,res=response)=>{
         data.nombre =req.body.nombre.toUpperCase();
     }
 
-    const producto = await Producto.findByIdAndUpdate(id,data,{new:true});
+    const vendido = await Vendidos.findByIdAndUpdate(id,data,{new:true});
 
     res.status(200).json({
-        msg:"producto actualizado correctamente",
-        producto
+        msg:"producto de mas vendidos actualizado correctamente",
+        vendido
 
 
     })
@@ -105,23 +105,23 @@ const actualizarProducto= async (req=request,res=response)=>{
 }
 
 //inactivar producto
-const borrarProducto= async (req=request,res=response)=>{
+const borrarVendido= async (req=request,res=response)=>{
     const {id} = req.params;
 
-    const productoBorrado = await Producto.findByIdAndDelete(id)
+    const vendidoBorrado = await Vendidos.findByIdAndDelete(id)
 
 res.json({
-    msg:"producto borrado correctamente",
-    productoBorrado
+    msg:"producto de mas vendidos borrado correctamente",
+    vendidoBorrado
 })
 }
 
 module.exports ={
-    obtenerProductos,
-    obtenerProducto ,
-    productoPost,
-    actualizarProducto,
-    borrarProducto
+    obtenerVendidos,
+    obtenerVendido ,
+    vendidosPost,
+    actualizarVendido,
+    borrarVendido
     
 
 }

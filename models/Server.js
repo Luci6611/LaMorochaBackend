@@ -9,6 +9,7 @@ class Server {
     this.authPath ="/api/auth"
     this.categoriasPath ="/api/categorias"
     this.productosPath ="/api/productos"
+    this.vendidosPath ="/api/masvendidos"
     //conectar db
     this.conectarDb();
     
@@ -34,6 +35,7 @@ this.app.use(this.usuariosPath, require("../routes/usuarios"))
 this.app.use(this.authPath, require("../routes/auth"))
 this.app.use(this.categoriasPath, require("../routes/categorias"))
 this.app.use(this.productosPath, require("../routes/productos"))
+this.app.use(this.vendidosPath, require("../routes/vendidos"))
   
     
 
